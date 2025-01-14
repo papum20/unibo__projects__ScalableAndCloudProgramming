@@ -22,3 +22,16 @@ e.g.: PageRank sol :
 *	`val conf = ` ... `.setMaster("local[*]")` : run in parallel on local machine, using all available cores  
 *	`.setMaster("local[2]")` : use 2 cores  
 
+
+## implementation
+
+map to split before groupBy is much faster (<0.5s) than just groupBy with split inside (2s)  
+*	`map{split(",")}.groupBy{pair[0]}`
+*	`groupBy{split(",")[0]}`
+
+`countByValue()` : is not scalable
+*	Return the count of each unique value in this RDD as a local map of (value, count) pairs.
+*	This method should only be used if the resulting map is expected to be small, as the whole thing is loaded into the driver's memory.
+*	To handle very large results, consider using `rdd.map(x => (x, 1L)).reduceByKey(_ + _)`, which returns an RDD[T, Long] instead of a map.
+
+`aggregate()` too not scalable, as doesn't return an RDD  
