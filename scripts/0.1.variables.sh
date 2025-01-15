@@ -39,3 +39,6 @@ export PATH_SRC_JAR=${PWD}/target/scala-2.12/scalable_2.12-0.1.0.jar
 export PATH_SRC_DATASET=${PWD}/src/main/resources/order_products.csv
 export PATH_DST_JAR=scalable.jar
 export PATH_DST_DATASET=order_products.csv
+
+export PATH_REMOTE_OUT=out.csv
+export PATH_REMOTE_OUT_DST=${PWD}/out/out.csv

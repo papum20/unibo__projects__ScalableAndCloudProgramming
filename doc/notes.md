@@ -25,7 +25,7 @@ e.g.: PageRank sol :
 
 ## implementation
 
-map to split before groupBy is much faster (<0.5s) than just groupBy with split inside (2s)  
+(local, 1 worker, 16 cores) map to split before groupBy is much faster (<0.5s) than just groupBy with split inside (2s)  
 *	`map{split(",")}.groupBy{pair[0]}`
 *	`groupBy{split(",")[0]}`
 

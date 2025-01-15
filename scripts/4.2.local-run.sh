@@ -13,12 +13,14 @@ PATH_LOG4J_PROPERTIES="${PWD}/scripts/log4j.properties"
 JVM_MEMORY=3G
 
 
+# needed for logging (history-server)
+mkdir /tmp/spark-events
 start-master.sh
-
 start-worker.sh \
 	"spark://${HOSTNAME}:7077"
 	#-c CORES
 	# -m MEM
+start-history-server.sh
 
 
 echo "[RUN] Launching..."
