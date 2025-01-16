@@ -35,3 +35,8 @@ e.g.: PageRank sol :
 *	To handle very large results, consider using `rdd.map(x => (x, 1L)).reduceByKey(_ + _)`, which returns an RDD[T, Long] instead of a map.
 
 `aggregate()` too not scalable, as doesn't return an RDD  
+
+use HDFS functions, instead of std java IO, just for consistency and for resilience and distribution with future improvements  
+(even though it's not needed, at the moment, for such simple tasks)
+
+use spark's save (and not collect first), to make scalable  

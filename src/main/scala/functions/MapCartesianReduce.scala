@@ -3,14 +3,13 @@ package functions
 import org.apache.commons.io.FileUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
-import util.Util.getPairs
+import util.Util
+import util.Util.DEBUG
 
 import java.io.File
 import scala.collection.mutable
 
 object MapCartesianReduce {
-
-	val DEBUG = false
 
 	def mapCartesianReduce(sc: SparkContext, path_input: String): RDD[String] = {
 
@@ -36,7 +35,7 @@ object MapCartesianReduce {
 		}
 
 		val joined = receipts_to_products.map { receipt =>
-			getPairs(
+			Util.getPairs(
 				receipt._2.map { entry => entry(1).toInt }
 			)
 		}
@@ -74,6 +73,73 @@ object MapCartesianReduce {
 		//println( reduced.take(5).mkString("\n") )
 
 		counted.map { entry => entry._1._1 + "," + entry._1._2 + "," + entry._2 }
+
+	}
+
+	/**
+	 * first map uses int keys and not strings
+	 * @param sc
+	 * @param path_input
+	 * @return
+	 */
+	def mapCartesianReduce2(sc: SparkContext, path_input: String): RDD[String] = {
+
+		val in = sc.textFile(path_input)
+
+		// is it better if elements are just split[0] instead of whole lines?
+
+		val receipts_to_products = in
+			.map { line =>
+				val pair = line.split(",")
+				(pair(0).toInt, pair(1))
+			}
+			.groupBy { pair => pair._1 }
+
+		val joined = receipts_to_products.map { receipt =>
+			Util.getPairs(
+				receipt._2.map { entry => entry._2.toInt }
+			)
+		}
+
+		val counted = joined
+			.flatMap { pairs => pairs }
+			.groupBy { pair => pair }
+			.map { m => (m._1, m._2.size) }
+
+		counted.map { entry => entry._1._1 + "," + entry._1._2 + "," + entry._2 }
+
+	}
+
+	/**
+	 * first map uses int keys and not strings.
+	 * also, group more maps
+	 * @param sc
+	 * @param path_input
+	 * @return
+	 */
+	def mapCartesianReduce3(sc: SparkContext, path_input: String): RDD[String] = {
+
+		val in = sc.textFile(path_input)
+
+		// is it better if elements are just split[0] instead of whole lines?
+		// 2. note in groupBy : do an aggregation later (and try to write it then to file)
+		// 3. try to write in parallel, w/o first coalesce(1)
+
+		val receipts_to_products = in
+			.map { line =>
+				val pair = line.split(",")
+				(pair(0).toInt, pair(1).toInt)
+			}
+			.groupBy { pair => pair._1 }
+
+		receipts_to_products
+			.flatMap { receipt =>
+				Util.getPairs(
+					receipt._2.map { entry => entry._2 }
+				)
+			}
+			.groupBy { pair => pair }
+			.map { m => m._1._1 + "," + m._1._2 + "," + m._2.size }
 
 	}
 

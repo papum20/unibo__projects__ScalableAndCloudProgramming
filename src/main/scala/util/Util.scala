@@ -1,13 +1,15 @@
 package util
 
 import org.apache.commons.io.FileUtils
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.rdd.RDD
+import org.apache.spark.{SparkConf, SparkContext}
 
-import java.io.{DataOutputStream, File, FileOutputStream, PrintWriter}
-import scala.io.Source
+import java.io.File
 
 object Util {
+
+	val DEBUG = false
 
 
 	def executeWithTime(
@@ -21,11 +23,13 @@ object Util {
 		val conf = new SparkConf().setAppName("orderProducts").setMaster("local[*]")
 		val sc = new SparkContext(conf)
 
-		val rdd = Time.time[RDD[String]](tag, {
+		val rdd = Time.time(tag, {
 			block(sc, path_input)
 		})
 
-		writeOutput(rdd, dir_output + "/" + tag + ".csv")
+		Time.time( s"${tag}_write", {
+			writeOutput(sc, rdd, dir_output + "/" + tag + ".csv")
+		})
 		sc.stop()
 
 	}
@@ -52,17 +56,21 @@ object Util {
 	}
 
 
-	private def writeOutput(rdd: RDD[String], path_output: String): Unit = {
+	private def writeOutput(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
 
-		new File(path_output).delete()
-		val out = new PrintWriter(path_output)
+		val tmp_path = out_path + "_tmp"
+		val fs = FileSystem.get(sc.hadoopConfiguration)
 
-		rdd.collect()
-			.foreach { line =>
-				out.write(line + "\n")
-			}
+		//FileUtils.deleteDirectory(new File(out_path))
+		fs.delete(new Path(out_path), true)
+		rdd.coalesce(1).saveAsTextFile(tmp_path)
 
-		out.close()
+		// Get the single part file from the temporary folder and rename it
+		val tmp_file = fs.globStatus(new Path(s"$tmp_path/part-*"))(0).getPath
+		fs.rename(tmp_file, new Path(out_path))
+
+		fs.delete(new Path(tmp_path), true)
+
 	}
 
 }
