@@ -35,6 +35,8 @@ object Main {
 		FileUtils.forceMkdir(new File(OUTPUT_DIR))
 
 		Util.executeWithTime("mapCartesianReduce", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce)
+		Util.executeWithTime("mapCartesianReduce2", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce2)
+		Util.executeWithTime("mapCartesianReduce3", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
 
 		// split
 		//Util.executeWithTime("splitInside", DATASET_PATH, OUTPUT_DIR, SplitTests.splitInside)
