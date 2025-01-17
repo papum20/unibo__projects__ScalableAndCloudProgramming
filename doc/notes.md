@@ -39,4 +39,7 @@ e.g.: PageRank sol :
 use HDFS functions, instead of std java IO, just for consistency and for resilience and distribution with future improvements  
 (even though it's not needed, at the moment, for such simple tasks)
 
-use spark's save (and not collect first), to make scalable  
+write output :
+*	use spark's save (and not collect first), to make scalable  
+*	distributed write and then fileOutputStream copy, and not first coalesce to create single file, it's faster
+	*	test: local, ca. 200s (190s RDD to files, 10s copy all files into one) vs 290s
