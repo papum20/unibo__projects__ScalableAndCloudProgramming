@@ -1,13 +1,8 @@
+import functions.{MapCartesianAggregate, MapCartesianReduce}
 import org.apache.commons.io.FileUtils
-import org.apache.spark.{SparkConf, SparkContext}
-import functions.{MapCartesianReduce, SplitTests}
-import util.Util
-import util.Time
+import util.{Time, Util}
 
 import java.io.File
-import java.util.concurrent.ConcurrentHashMap
-import scala.collection.mutable
-import scala.io.Source
 
 object Main {
 
@@ -34,9 +29,15 @@ object Main {
 
 		FileUtils.forceMkdir(new File(OUTPUT_DIR))
 
-		Util.executeWithTime("mapCartesianReduce", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce)
-		Util.executeWithTime("mapCartesianReduce2", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce2)
-		Util.executeWithTime("mapCartesianReduce3", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
+		//Util.executeWithTime(Util.writeOutput)("mapCartesianReduce", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce)
+		//Util.executeWithTime(Util.writeOutput)("mapCartesianReduce2", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce2)
+		//Util.executeWithTime(Util.writeOutput)("mapCartesianReduce3", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
+		//Util.executeWithTime(Util.writeOutput)("mapCartesianReduce4", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce4)
+		//Util.executeWithTime(Util.writeOutput_noCoalesceNoRename)("mapCartesianReduce3partitionedNoRename", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
+		//Util.executeWithTime(Util.writeOutput_noCoalesce)("mapCartesianReduce3partitioned", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
+		//Util.executeWithTime(Util.writeOutput_noCoalesceNoRename)("mapCartesianReduce3partitionedNoRename", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
+		//Util.executeWithTime(Util.writeOutput_noCoalesce_concurrentMap)("mapCartesianAggregateConcurrent", DATASET_PATH, OUTPUT_DIR, MapCartesianAggregate.mapCartesianAggregateConcurrent)
+		Util.executeWithTime(Util.writeOutput_noCoalesce_map)("mapCartesianAggregate", DATASET_PATH, OUTPUT_DIR, MapCartesianAggregate.mapCartesianAggregate)
 
 		// split
 		//Util.executeWithTime("splitInside", DATASET_PATH, OUTPUT_DIR, SplitTests.splitInside)

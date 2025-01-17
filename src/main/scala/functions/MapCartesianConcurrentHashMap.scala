@@ -9,6 +9,11 @@ import java.util.concurrent.ConcurrentHashMap
 
 object MapCartesianConcurrentHashMap {
 
+	/**
+	 * OutOfMemory (3GB)
+	 * @param path_input
+	 * @param path_output
+	 */
 	private def mapCartesian_concurrentHashMap(path_input: String, path_output: String): Unit = {
 
 		val conf = new SparkConf().setAppName("orderProducts").setMaster("local[*]")
@@ -64,9 +69,5 @@ object MapCartesianConcurrentHashMap {
 		println( "Reduced:" )
 		println( reduced.size )
 		println( reduced.entrySet().toArray().toList.take(5).mkString("\n") )
-
-		FileUtils.deleteDirectory(new File(path_output))
-		//ranks.saveAsTextFile(outputFile)
-		sc.stop()
 	}
 }
