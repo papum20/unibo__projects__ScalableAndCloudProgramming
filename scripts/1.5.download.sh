@@ -5,6 +5,6 @@ if [[ ! -d scripts ]]; then
 	exit 1
 fi
 
-source ./0.1.variables.sh
+source ./scripts/0.1.variables.sh
 
 gcloud storage cp "gs://${DATAPROC_BUCKET_NAME}/${PATH_REMOTE_OUT}" "$PATH_REMOTE_OUT_DST"
