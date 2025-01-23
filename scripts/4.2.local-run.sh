@@ -33,5 +33,6 @@ spark-submit \
     --conf "spark.executor.extraJavaOptions=-Dlog4j.configuration=file:$PATH_LOG4J_PROPERTIES" \
     --driver-memory $JVM_MEMORY \
 	"$PATH_SRC_JAR" \
+	-- true \
 	2>&1 | tee -a "$PATH_LOG"
     #--master 'local[0]' \

@@ -5,7 +5,7 @@ if [[ ! -d scripts ]]; then
 	exit 1
 fi
 
-source ./0.1.variables.sh
+source ./scripts/0.1.variables.sh
 
 gcloud dataproc clusters create "$DATAPROC_CLUSTER_NAME" \
     --region="$DATAPROC_CLUSTER_REGION" \

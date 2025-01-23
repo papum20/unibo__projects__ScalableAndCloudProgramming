@@ -117,7 +117,6 @@ object MapCartesianReduce {
 		val in = sc.textFile(path_input)
 
 		// 2. note in groupBy : do an aggregation later (and try to write it then to file)
-		// 3. try to write in parallel, w/o first coalesce(1)
 
 		val receipts_to_products = in
 			.map { line =>
@@ -149,7 +148,6 @@ object MapCartesianReduce {
 		val in = sc.textFile(path_input)
 
 		// 2. note in groupBy : do an aggregation later (and try to write it then to file)
-		// 3. try to write in parallel, w/o first coalesce(1)
 
 		val receipts_to_products = in
 			.map { line =>
@@ -181,8 +179,6 @@ object MapCartesianReduce {
 
 		val in = sc.textFile(path_input)
 
-		// 3. try to write in parallel, w/o first coalesce(1)
-
 		val receipts_to_products = in
 			.map { line =>
 				val pair = line.split(",")
@@ -204,5 +200,117 @@ object MapCartesianReduce {
 
 	}
 
+	/**
+	 * 3 +
+	 * getPairs also returns sizes, and group by key.
+	 * @param sc
+	 * @param path_input
+	 * @return
+	 */
+	def mapCartesianReduce6(sc: SparkContext, path_input: String): RDD[String] = {
+
+		val in = sc.textFile(path_input)
+
+		val receipts_to_products = in
+			.map { line =>
+				val pair = line.split(",")
+				(pair(0).toInt, pair(1).toInt)
+			}
+			.groupBy { pair => pair._1 }
+
+		receipts_to_products
+			.flatMap { receipt =>
+				Util.getPairs2(
+					receipt._2.map { entry => entry._2 }
+				)
+			}
+			.groupByKey()
+			.map { m => m._1._1 + "," + m._1._2 + "," + m._2.size }
+
+	}
+
+	/**
+	 * 6 +
+	 * reduceByKey.
+	 * @param sc
+	 * @param path_input
+	 * @return
+	 */
+	def mapCartesianReduce7(sc: SparkContext, path_input: String): RDD[String] = {
+
+		val in = sc.textFile(path_input)
+
+		val receipts_to_products = in
+			.map { line =>
+				val pair = line.split(",")
+				(pair(0).toInt, pair(1).toInt)
+			}
+			.groupBy { pair => pair._1 }
+
+		receipts_to_products
+			.flatMap { receipt =>
+				Util.getPairs2(
+					receipt._2.map { entry => entry._2 }
+				)
+			}
+			.reduceByKey { (a, b) => a + b }
+			.map { m => m._1._1 + "," + m._1._2 + "," + m._2 }
+
+	}
+
+	/**
+	 * 7 +
+	 * don't return strings.
+	 * @param sc
+	 * @param path_input
+	 * @return
+	 */
+	def mapCartesianReduce8(sc: SparkContext, path_input: String): RDD[((Int, Int), Int)] = {
+
+		val in = sc.textFile(path_input)
+
+		val receipts_to_products = in
+			.map { line =>
+				val pair = line.split(",")
+				(pair(0).toInt, pair(1).toInt)
+			}
+			.groupBy { pair => pair._1 }
+
+		receipts_to_products
+			.flatMap { receipt =>
+				Util.getPairs2(
+					receipt._2.map { entry => entry._2 }
+				)
+			}
+			.reduceByKey { (a, b) => a + b }
+
+	}
+
+	/**
+	 * 7 +
+	 * also use groupByKey first.
+	 * @param sc
+	 * @param path_input
+	 * @return
+	 */
+	def mapCartesianReduce9(sc: SparkContext, path_input: String): RDD[String] = {
+
+		val in = sc.textFile(path_input)
+
+		val receipts_to_products = in
+			.map { line =>
+				val pair = line.split(",")
+				(pair(0).toInt, pair(1).toInt)
+			}
+			.groupByKey()
+
+		receipts_to_products
+			.flatMap { receipt =>
+				Util.getPairs2( receipt._2 )
+			}
+			.reduceByKey { (a, b) => a + b }
+			.map { m => m._1._1 + "," + m._1._2 + "," + m._2 }
+
+	}
 
 }

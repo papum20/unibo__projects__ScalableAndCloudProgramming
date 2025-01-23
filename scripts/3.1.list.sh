@@ -5,7 +5,7 @@ if [[ ! -d scripts ]]; then
 	exit 1
 fi
 
-source ./0.1.variables.sh
+source ./scripts/0.1.variables.sh
 
 
 echo -e "Buckets:"

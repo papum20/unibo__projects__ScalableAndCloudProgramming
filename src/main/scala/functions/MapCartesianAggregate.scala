@@ -1,12 +1,10 @@
 package functions
 
 import org.apache.spark.SparkContext
-import org.apache.spark.rdd.RDD
 import util.Util
-import util.Util.DEBUG
 
-import java.util.concurrent.ConcurrentHashMap
 import java.util.Map
+import java.util.concurrent.ConcurrentHashMap
 import scala.collection.immutable.HashMap
 
 object MapCartesianAggregate {
