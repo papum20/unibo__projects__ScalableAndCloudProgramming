@@ -7,7 +7,5 @@ fi
 
 source ./scripts/0.1.variables.sh
 
-# rm buckets and data
-gcloud storage rm -r \
-	"gs://${DATAPROC_BUCKET_NAME}" \
-	"gs://${DATAPROC_TMP_BUCKET_NAME}"
+gcloud dataproc clusters stop "$DATAPROC_CLUSTER_NAME" \
+    --region="$DATAPROC_CLUSTER_REGION"

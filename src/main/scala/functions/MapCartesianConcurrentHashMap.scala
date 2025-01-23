@@ -1,10 +1,8 @@
 package functions
 
-import util.Util.getPairs
-import org.apache.commons.io.FileUtils
 import org.apache.spark.{SparkConf, SparkContext}
+import util.Util.getPairs
 
-import java.io.File
 import java.util.concurrent.ConcurrentHashMap
 
 object MapCartesianConcurrentHashMap {

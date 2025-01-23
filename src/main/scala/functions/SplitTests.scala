@@ -1,10 +1,7 @@
 package functions
 
-import org.apache.commons.io.FileUtils
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkConf, SparkContext}
-
-import java.io.File
 
 object SplitTests {
 

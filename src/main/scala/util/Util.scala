@@ -1,13 +1,11 @@
 package util
 
-import com.sun.nio.file.ExtendedCopyOption
 import org.apache.commons.io.FileUtils
 import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 import java.io.{DataOutputStream, File, FileOutputStream, OutputStream}
-import java.nio.file.{Paths, StandardCopyOption}
 import java.util.Map
 import scala.collection.AbstractMap
 
@@ -27,7 +25,7 @@ object Util {
 		val conf = new SparkConf().setAppName("orderProducts").setMaster("local[*]")
 		val sc = new SparkContext(conf)
 
-		val rdd = Time.time(tag, {
+		val rdd = Time.printTime(tag, {
 			block(sc, path_input)
 		})
 
@@ -38,12 +36,40 @@ object Util {
 
 	}
 
-	def executeWithTime(
+	def executeWithTimeRDD[T](write: (SparkContext, RDD[T], String) => Unit) (
+		tag: String,
+		path_input: String, dir_output: String,
+		block: (SparkContext, String) => RDD[T]
+	): Unit = {
+
+		println("Launching: " + tag)
+
+		val conf = new SparkConf().setAppName("orderProducts").setMaster("local[*]")
+		val sc = new SparkContext(conf)
+
+		val rdd = Time.printTime(tag, {
+			val res = block(sc, path_input)
+				.persist()
+println("done")
+			val c = res.count()
+			// action, to measure time
+			println("Count: " + c)
+			res
+		})
+
+		Time.printTime( s"${tag}_write", {
+			write(sc, rdd, dir_output + "/" + tag + ".csv")
+		})
+		sc.stop()
+
+	}
+
+	def executeWithTimeRDD(
 	   tag: String,
 	   path_input: String, dir_output: String,
 	   block: (SparkContext, String) => RDD[String]
    ): Unit =
-		executeWithTime(writeOutput_noCoalesce)(tag, path_input, dir_output, block)
+		executeWithTimeRDD(writeOutput_noCoalesce)(tag, path_input, dir_output, block)
 
 	def getPairs(elems: Iterable[Int]): Iterable[(Int, Int)] =
 		for {
@@ -108,6 +134,24 @@ object Util {
 	}
 
 	def writeOutput_noCoalesce(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
+
+		val tmp_path = out_path + "_tmp"
+		val fs = FileSystem.get(sc.hadoopConfiguration)
+
+		fs.delete(new Path(out_path), true)
+		fs.delete(new Path(tmp_path), true)
+		rdd.saveAsTextFile(tmp_path)
+
+		val out: OutputStream = new FileOutputStream(new File(out_path))
+		for ( tmp_file <- fs.globStatus(new Path(s"$tmp_path/part-*")) ) {
+			FileUtils.copyFile(new File(tmp_file.getPath.toUri), out)
+		}
+		out.close()
+
+		fs.delete(new Path(tmp_path), true)
+	}
+
+	def writeOutput_noCoalesce_noStrings(sc: SparkContext, rdd: RDD[((Int, Int), Int)], out_path: String): Unit = {
 
 		val tmp_path = out_path + "_tmp"
 		val fs = FileSystem.get(sc.hadoopConfiguration)

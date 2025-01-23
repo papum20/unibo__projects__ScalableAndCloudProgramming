@@ -6,4 +6,5 @@ if [[ ! -d scripts ]]; then
 fi
 
 sbt compile \
-	package
+	clean assembly
+	#package
