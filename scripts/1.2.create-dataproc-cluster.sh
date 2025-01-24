@@ -17,7 +17,7 @@ gcloud dataproc clusters create "$DATAPROC_CLUSTER_NAME" \
 	--worker-boot-disk-size "$DATAPROC_CLUSTER_WORKER_BOOT_DISK_SIZE" \
 	--master-machine-type="$DATAPROC_CLUSTER_MASTER_MACHINE_TYPE" \
 	--worker-machine-type="$DATAPROC_CLUSTER_WORKER_MACHINE_TYPE"
-	#--optional-components=JUPYTER \
-	#--enable-component-gateway
 	#--scopes storage-rw
+	#--optional-components=JUPYTER \
+	#--enable-component-gateway \
 

@@ -1,11 +1,11 @@
 package util
 
 import org.apache.commons.io.FileUtils
-import org.apache.hadoop.fs.{FileSystem, Path}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 import java.io.{DataOutputStream, File, FileOutputStream, OutputStream}
+import java.nio.file.{Files, Paths, StandardCopyOption}
 import java.util.Map
 import scala.collection.AbstractMap
 
@@ -111,62 +111,69 @@ println("done")
 	def writeOutput(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
 
 		val tmp_path = out_path + "_tmp"
-		val fs = FileSystem.get(sc.hadoopConfiguration)
 
-		//FileUtils.deleteDirectory(new File(out_path))
-		fs.delete(new Path(out_path), true)
-		fs.delete(new Path(tmp_path), true)
+		Files.deleteIfExists(Paths.get(out_path))
+		Files.deleteIfExists(Paths.get(tmp_path))
 		rdd.coalesce(1).saveAsTextFile(tmp_path)
 
 		// Get the single part file from the temporary folder and rename it
-		val tmp_file = fs.globStatus(new Path(s"$tmp_path/part-*"))(0).getPath
-		fs.rename(tmp_file, new Path(out_path))
+		val tmp_file = Files.list(Paths.get(tmp_path))
+			.filter(path => path.getFileName.toString.startsWith("part-"))
+			.findFirst()
+			.get()
 
-		fs.delete(new Path(tmp_path), true)
+		Files.move(tmp_file, Paths.get(out_path), StandardCopyOption.REPLACE_EXISTING)
+		Files.deleteIfExists(Paths.get(tmp_path))
 	}
 
 	def writeOutput_noCoalesceNoRename(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
 
-		val fs = FileSystem.get(sc.hadoopConfiguration)
-
-		fs.delete(new Path(out_path), true)
+		Files.deleteIfExists(Paths.get(out_path))
 		rdd.saveAsTextFile(out_path)
 	}
 
 	def writeOutput_noCoalesce(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
 
 		val tmp_path = out_path + "_tmp"
-		val fs = FileSystem.get(sc.hadoopConfiguration)
 
-		fs.delete(new Path(out_path), true)
-		fs.delete(new Path(tmp_path), true)
+		Files.deleteIfExists(Paths.get(out_path))
+		Files.deleteIfExists(Paths.get(tmp_path))
 		rdd.saveAsTextFile(tmp_path)
 
-		val out: OutputStream = new FileOutputStream(new File(out_path))
-		for ( tmp_file <- fs.globStatus(new Path(s"$tmp_path/part-*")) ) {
-			FileUtils.copyFile(new File(tmp_file.getPath.toUri), out)
+		val tmp_files = Files.list(Paths.get(tmp_path))
+			.filter(path => path.getFileName.toString.startsWith("part-"))
+			.iterator()
+
+		val out = Files.newOutputStream(Paths.get(out_path))
+		while (tmp_files.hasNext) {
+			val tmp_file = tmp_files.next()
+			Files.copy(tmp_file, out)
 		}
 		out.close()
 
-		fs.delete(new Path(tmp_path), true)
+		Files.deleteIfExists(Paths.get(tmp_path))
 	}
 
 	def writeOutput_noCoalesce_noStrings(sc: SparkContext, rdd: RDD[((Int, Int), Int)], out_path: String): Unit = {
 
 		val tmp_path = out_path + "_tmp"
-		val fs = FileSystem.get(sc.hadoopConfiguration)
 
-		fs.delete(new Path(out_path), true)
-		fs.delete(new Path(tmp_path), true)
+		Files.deleteIfExists(Paths.get(out_path))
+		Files.deleteIfExists(Paths.get(tmp_path))
 		rdd.saveAsTextFile(tmp_path)
 
-		val out: OutputStream = new FileOutputStream(new File(out_path))
-		for ( tmp_file <- fs.globStatus(new Path(s"$tmp_path/part-*")) ) {
-			FileUtils.copyFile(new File(tmp_file.getPath.toUri), out)
+		val tmp_files = Files.list(Paths.get(tmp_path))
+			.filter(path => path.getFileName.toString.startsWith("part-"))
+			.iterator()
+
+		val out = Files.newOutputStream(Paths.get(out_path))
+		while (tmp_files.hasNext) {
+			val tmp_file = tmp_files.next()
+			Files.copy(tmp_file, out)
 		}
 		out.close()
 
-		fs.delete(new Path(tmp_path), true)
+		Files.deleteIfExists(Paths.get(tmp_path))
 	}
 
 	def writeOutput_noCoalesce_concurrentMap(sc: SparkContext, v: Map[(Int, Int), Int], out_path: String): Unit = {

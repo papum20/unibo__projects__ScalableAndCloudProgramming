@@ -5,18 +5,19 @@ ThisBuild / scalaVersion := "2.12.15"
 lazy val root = (project in file("."))
     .settings(
         name := "scalable",
-        assembly / mainClass := Some("Main"),
+        assembly / mainClass := Some("Main2"),
         assembly / assemblyJarName := f"scalable_2.12-0.1.0.jar",
     )
 
 
-Compile / mainClass := Some("Main")
+Compile / mainClass := Some("Main2")
 
 
 libraryDependencies ++= Seq(
     "com.google.cloud" % "google-cloud-nio" % "0.127.29",
     "com.google.cloud" % "google-cloud-storage" % "2.47.0",
     "org.apache.spark" % "spark-core_2.12" % "3.5.4",
+    "org.apache.spark" %% "spark-sql" % "3.5.4",
 )
 
 
