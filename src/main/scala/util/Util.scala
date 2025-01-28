@@ -51,9 +51,9 @@ object Util {
 			val res = block(sc, path_input)
 				.persist()
 println("done")
-			val c = res.count()
+			//val c = res.count()
 			// action, to measure time
-			println("Count: " + c)
+			//println("Count: " + c)
 			res
 		})
 
