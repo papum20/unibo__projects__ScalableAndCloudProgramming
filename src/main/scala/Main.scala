@@ -17,11 +17,6 @@ object Main {
 		"/home/papum/programm/unibo/projects/scalableAndCloudProgramming/out/"
 	private val DATASET_PATH_REMOTE =
 		"order_products.csv"
-	private val OUTPUT_DIR_REMOTE =
-		""
-		//"out/"
-
-	private val GCLOUD_PROJECT_ID = "scalableandcloudprogramming24"
 
 
 	/**
@@ -40,29 +35,12 @@ object Main {
 		}
 		val is_local = args(0) == "true"
 
-		if (!is_local && args.length < 2) {
+		if (!is_local && args.length < 3) {
 			usage()
 			return
 		}
 		val bucket_name = if (is_local) null else args(1)
-
-		//val fs =
-		//	if (!is_local) CloudStorageFileSystem.forBucket(bucket_name)
-		//	else null
-
-
-		//val folder = fs.getPath(".")
-		//val stream = Files.list(folder)
-		//stream
-		//	.forEach( it => println(it.toAbsolutePath.toString) )
-		//stream.close()
-
-		//println("Folder " + folder)
-		//val listOfFiles = folder.
-		//if (listOfFiles != null) for (i <- 0 until listOfFiles.length) {
-		//	if (listOfFiles(i).isFile) System.out.println("File " + listOfFiles(i).getAbsolutePath)
-		//	else if (listOfFiles(i).isDirectory) System.out.println("Directory " + listOfFiles(i).getAbsolutePath)
-		//}
+		val remote_out_path = if (is_local) null else args(2)
 
 
 		val DATASET_PATH =
@@ -72,18 +50,11 @@ object Main {
 			//else fs.getPath(DATASET_PATH_REMOTE).toAbsolutePath.toString
 		val OUTPUT_DIR =
 			if (is_local) OUTPUT_DIR_LOCAL
-			else OUTPUT_DIR_REMOTE
-			//else s"gs://${bucket_name}/${OUTPUT_DIR_REMOTE}"
+			else s"gs://${bucket_name}/${remote_out_path}"
 			//else fs.getPath(OUTPUT_DIR_REMOTE).toAbsolutePath.toString
 
 		println("Path dataset: " + DATASET_PATH)
 		println("Path output dir: " + OUTPUT_DIR)
-
-
-		// Create a new GCS client
-		val storage = StorageOptions.newBuilder.setProjectId(GCLOUD_PROJECT_ID).build.getService
-
-		GStorage.listFiles(storage, bucket_name, "")
 
 
 		/* Run */
@@ -99,7 +70,7 @@ Util.printMem()
 		//Util.executeWithTime(Util.writeOutput_noCoalesceNoRename)("mapCartesianReduce3partitionedNoRename", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
 		//Util.executeWithTime(Util.writeOutput_noCoalesce_concurrentMap)("mapCartesianAggregateConcurrent", DATASET_PATH, OUTPUT_DIR, MapCartesianAggregate.mapCartesianAggregateConcurrent)
 		//Util.executeWithTime(Util.writeOutput_noCoalesce_map)("mapCartesianAggregate", DATASET_PATH, OUTPUT_DIR, MapCartesianAggregate.mapCartesianAggregate)
-		Util.executeWithTimeRDD(Util.writeOutput_noCoalesce_gStorage(storage, bucket_name))("mapCartesianReduce3", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
+		Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce3", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
 		//Util.executeWithTimeRDD("mapCartesianReduce_groupByKey", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce6)
 		//Util.executeWithTimeRDD("mapCartesianReduce_reduceByKey", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce7)
 		//Util.executeWithTimeRDD(Util.writeOutput_noCoalesce_noStrings)("mapCartesianReduce_reduceByKey_noString", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce8)
@@ -128,7 +99,7 @@ Util.printMem()
 
 
 	def usage(): Unit = {
-		println("Usage: IS_LOCAL={true|false} [BUCKET_NAME]")
+		println("Usage: IS_LOCAL={true|false} [BUCKET_NAME] [REMOTE_OUT_PATH]")
 	}
 
 }
