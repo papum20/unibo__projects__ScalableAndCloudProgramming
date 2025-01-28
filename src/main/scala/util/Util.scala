@@ -1,5 +1,6 @@
 package util
 
+import com.google.cloud.storage.{BlobId, BlobInfo, Storage}
 import org.apache.commons.io.FileUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
@@ -58,7 +59,10 @@ println("done")
 		})
 
 		Time.printTime( s"${tag}_write", {
-			write(sc, rdd, dir_output + "/" + tag + ".csv")
+			write(sc, rdd,
+				Paths.get(dir_output, tag + ".csv").toString
+				//dir_output + "/" + tag + ".csv"
+			)
 		})
 		sc.stop()
 
@@ -68,7 +72,7 @@ println("done")
 	   tag: String,
 	   path_input: String, dir_output: String,
 	   block: (SparkContext, String) => RDD[String]
-   ): Unit =
+   	): Unit =
 		executeWithTimeRDD(writeOutput_noCoalesce)(tag, path_input, dir_output, block)
 
 	def getPairs(elems: Iterable[Int]): Iterable[(Int, Int)] =
@@ -126,6 +130,26 @@ println("done")
 		Files.deleteIfExists(Paths.get(tmp_path))
 	}
 
+	def writeOutput_gStorage(storage: Storage, bucket_name: String)
+							(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
+
+		val tmp_path = out_path + "_tmp"
+
+		GStorage.deleteFile(storage, bucket_name, tmp_path)
+		GStorage.deleteFile(storage, bucket_name, out_path)
+
+		rdd.coalesce(1).saveAsTextFile(tmp_path)
+
+		// Get the single part file from the temporary folder and rename it
+		val tmp_file = Files.list(Paths.get(tmp_path))
+			.filter(path => path.getFileName.toString.startsWith("part-"))
+			.findFirst()
+			.get()
+
+		Files.move(tmp_file, Paths.get(out_path), StandardCopyOption.REPLACE_EXISTING)
+		GStorage.deleteFile(storage, bucket_name, tmp_path)
+	}
+
 	def writeOutput_noCoalesceNoRename(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
 
 		Files.deleteIfExists(Paths.get(out_path))
@@ -134,9 +158,10 @@ println("done")
 
 	def writeOutput_noCoalesce(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
 
-		val tmp_path = out_path + "_tmp"
+		val tmp_path = out_path + "_tmp/"
+		val _out_path = out_path + "/"
 
-		Files.deleteIfExists(Paths.get(out_path))
+		Files.deleteIfExists(Paths.get(_out_path))
 		Files.deleteIfExists(Paths.get(tmp_path))
 		rdd.saveAsTextFile(tmp_path)
 
@@ -144,7 +169,7 @@ println("done")
 			.filter(path => path.getFileName.toString.startsWith("part-"))
 			.iterator()
 
-		val out = Files.newOutputStream(Paths.get(out_path))
+		val out = Files.newOutputStream(Paths.get(_out_path))
 		while (tmp_files.hasNext) {
 			val tmp_file = tmp_files.next()
 			Files.copy(tmp_file, out)
@@ -152,6 +177,30 @@ println("done")
 		out.close()
 
 		Files.deleteIfExists(Paths.get(tmp_path))
+	}
+
+	def writeOutput_noCoalesce_gStorage(storage: Storage, bucket_name: String)
+									   (sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
+
+		val tmp_path = out_path + "_tmp/"
+		val _out_path = out_path + "/"
+
+		GStorage.deleteFile(storage, bucket_name, tmp_path)
+		GStorage.deleteFile(storage, bucket_name, _out_path)
+		rdd.saveAsTextFile(tmp_path)
+
+		val tmp_files = Files.list(Paths.get(tmp_path))
+			.filter(path => path.getFileName.toString.startsWith("part-"))
+			.iterator()
+
+		val out = Files.newOutputStream(Paths.get(_out_path))
+		while (tmp_files.hasNext) {
+			val tmp_file = tmp_files.next()
+			Files.copy(tmp_file, out)
+		}
+		out.close()
+
+		GStorage.deleteFile(storage, bucket_name, tmp_path)
 	}
 
 	def writeOutput_noCoalesce_noStrings(sc: SparkContext, rdd: RDD[((Int, Int), Int)], out_path: String): Unit = {
