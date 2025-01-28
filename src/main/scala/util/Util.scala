@@ -31,7 +31,7 @@ object Util {
 		})
 
 		Time.printTime( s"${tag}_write", {
-			write(sc, rdd, dir_output + "/" + tag + ".csv")
+			write(sc, rdd, dir_output)
 		})
 		sc.stop()
 
@@ -59,10 +59,7 @@ println("done")
 		})
 
 		Time.printTime( s"${tag}_write", {
-			write(sc, rdd,
-				Paths.get(dir_output, tag + ".csv").toString
-				//dir_output + "/" + tag + ".csv"
-			)
+			write(sc, rdd, dir_output)
 		})
 		sc.stop()
 
@@ -158,25 +155,9 @@ println("done")
 
 	def writeOutput_noCoalesce(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
 
-		val tmp_path = out_path + "_tmp/"
-		val _out_path = out_path + "/"
-
-		Files.deleteIfExists(Paths.get(_out_path))
-		Files.deleteIfExists(Paths.get(tmp_path))
-		rdd.saveAsTextFile(tmp_path)
-
-		val tmp_files = Files.list(Paths.get(tmp_path))
+		val tmp_files = Files.list(Paths.get(out_path))
 			.filter(path => path.getFileName.toString.startsWith("part-"))
 			.iterator()
-
-		val out = Files.newOutputStream(Paths.get(_out_path))
-		while (tmp_files.hasNext) {
-			val tmp_file = tmp_files.next()
-			Files.copy(tmp_file, out)
-		}
-		out.close()
-
-		Files.deleteIfExists(Paths.get(tmp_path))
 	}
 
 	def writeOutput_noCoalesce_gStorage(storage: Storage, bucket_name: String)
