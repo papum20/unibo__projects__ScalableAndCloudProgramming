@@ -5,12 +5,12 @@ ThisBuild / scalaVersion := "2.12.15"
 lazy val root = (project in file("."))
     .settings(
         name := "scalable",
-        assembly / mainClass := Some("Main2"),
+        assembly / mainClass := Some("Main"),
         assembly / assemblyJarName := f"scalable_2.12-0.1.0.jar",
     )
 
 
-Compile / mainClass := Some("Main2")
+Compile / mainClass := Some("Main")
 
 
 libraryDependencies ++= Seq(
