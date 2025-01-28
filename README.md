@@ -34,7 +34,7 @@ set `Private Google Access` to `On`, for `default` subnet in `west-central1` for
 
 tests:
 * main2 w/ full dataset (ca. 0h20)
-* mine w/ new cpus, full dataset (just time, no matter google fs errors) (12h29-)
+* mine w/ new cpus, full dataset (just time, no matter google fs errors) (12h45-)
 * fix mine accessing google storage fs (delete if exists not working)
 * compare time main/main2
 * could be sc/sparkSession
