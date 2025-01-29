@@ -43,3 +43,39 @@ write output :
 *	use spark's save (and not collect first), to make scalable  
 *	distributed write and then fileOutputStream copy, and not first coalesce to create single file, it's faster
 	*	test: local, ca. 200s (190s RDD to files, 10s copy all files into one) vs 290s
+
+## performance
+
+removed local[]; SparkSession  
+3  
+```
+2025-01-29 14:02:44
+mapCartesianReduce3 (ms): MutableList(1028)
+2025-01-29 14:22:10
+mapCartesianReduce3_write (ms): MutableList(1164313)
+```
+9  
+```
+2025-01-29 14:36:48
+mapCartesianReduce_groupByKey_reduceByKey (ms): MutableList(1114)
+2025-01-29 14:47:12
+mapCartesianReduce_groupByKey_reduceByKey_write (ms): MutableList(647445)
+```
+SparkContext  
+10  
+```
+2025-01-29 15:11:17
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(891)
+2025-01-29 15:22:09
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(651140)
+```
+6
+```
+2025-01-29 15:35:36
+mapCartesianReduce_groupByKey (ms): MutableList(901)
+2025-01-29 15:48:44
+mapCartesianReduce_groupByKey_write (ms): MutableList(786762)
+```
+7
+```
+```

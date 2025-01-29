@@ -2,8 +2,9 @@ package util
 
 import com.google.cloud.storage.{BlobId, BlobInfo, Storage}
 import org.apache.commons.io.FileUtils
-import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.SparkSession
 
 import java.io.{DataOutputStream, File, FileOutputStream, OutputStream}
 import java.nio.file.{Files, Paths, StandardCopyOption}
@@ -23,8 +24,13 @@ object Util {
 
 		println("Launching: " + tag)
 
-		val conf = new SparkConf().setAppName("orderProducts").setMaster("local[*]")
+		val conf = new SparkConf().setAppName("orderProducts")
 		val sc = new SparkContext(conf)
+		
+		val spark = SparkSession.builder()
+			.appName("orderProducts")
+			//.master("local[*]")
+			.getOrCreate()
 
 		val rdd = Time.printTime(tag, {
 			block(sc, path_input)
@@ -33,7 +39,7 @@ object Util {
 		Time.printTime( s"${tag}_write", {
 			write(sc, rdd, dir_output)
 		})
-		sc.stop()
+		spark.stop()
 
 	}
 
@@ -45,12 +51,17 @@ object Util {
 
 		println("Launching: " + tag)
 
-		val conf = new SparkConf().setAppName("orderProducts").setMaster("local[*]")
+		val conf = new SparkConf().setAppName("orderProducts")
 		val sc = new SparkContext(conf)
+		
+		val spark = SparkSession.builder()
+			.appName("orderProducts")
+			//.master("local[*]")
+			.getOrCreate()
 
 		val rdd = Time.printTime(tag, {
 			val res = block(sc, path_input)
-				.persist()
+				//.persist()
 println("done")
 			//val c = res.count()
 			// action, to measure time
@@ -61,7 +72,7 @@ println("done")
 		Time.printTime( s"${tag}_write", {
 			write(sc, rdd, dir_output)
 		})
-		sc.stop()
+		spark.stop()
 
 	}
 
@@ -155,10 +166,9 @@ println("done")
 
 	def writeOutput_noCoalesce(sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {
 
-		val tmp_files = Files.list(Paths.get(out_path))
-			.filter(path => path.getFileName.toString.startsWith("part-"))
-			.iterator()
+		rdd.saveAsTextFile(out_path)
 	}
+	
 
 	def writeOutput_noCoalesce_gStorage(storage: Storage, bucket_name: String)
 									   (sc: SparkContext, rdd: RDD[String], out_path: String): Unit = {

@@ -2,6 +2,7 @@ package functions
 
 import org.apache.commons.io.FileUtils
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 import util.Util
 import util.Util.DEBUG
@@ -75,7 +76,7 @@ object MapCartesianReduce {
 
 	/**
 	 * first map uses int keys and not strings
-	 * @param sc
+	 * @param spark
 	 * @param path_input
 	 * @return
 	 */
@@ -108,7 +109,7 @@ object MapCartesianReduce {
 	/**
 	 * first map uses int keys and not strings.
 	 * also, group more maps
-	 * @param sc
+	 * @param spark
 	 * @param path_input
 	 * @return
 	 */
@@ -139,7 +140,7 @@ object MapCartesianReduce {
 	/**
 	 * 2 + 3 +
 	 * is it better if elements are just split[0] instead of whole lines?
-	 * @param sc
+	 * @param spark
 	 * @param path_input
 	 * @return
 	 */
@@ -171,7 +172,7 @@ object MapCartesianReduce {
 	/**
 	 * 3 +
 	 * note in groupBy : do an aggregation later (and try to write it then to file)
-	 * @param sc
+	 * @param spark
 	 * @param path_input
 	 * @return
 	 */
@@ -203,7 +204,7 @@ object MapCartesianReduce {
 	/**
 	 * 3 +
 	 * getPairs also returns sizes, and group by key.
-	 * @param sc
+	 * @param spark
 	 * @param path_input
 	 * @return
 	 */
@@ -232,7 +233,7 @@ object MapCartesianReduce {
 	/**
 	 * 6 +
 	 * reduceByKey.
-	 * @param sc
+	 * @param spark
 	 * @param path_input
 	 * @return
 	 */
@@ -261,7 +262,7 @@ object MapCartesianReduce {
 	/**
 	 * 7 +
 	 * don't return strings.
-	 * @param sc
+	 * @param spark
 	 * @param path_input
 	 * @return
 	 */
@@ -289,7 +290,7 @@ object MapCartesianReduce {
 	/**
 	 * 7 +
 	 * also use groupByKey first.
-	 * @param sc
+	 * @param spark
 	 * @param path_input
 	 * @return
 	 */
@@ -310,6 +311,35 @@ object MapCartesianReduce {
 			}
 			.reduceByKey { (a, b) => a + b }
 			.map { m => m._1._1 + "," + m._1._2 + "," + m._2 }
+
+	}
+
+	/**
+	 * 9 + pattern match case
+	 * @param spark
+	 * @param path_input
+	 * @return
+	 */
+	def mapCartesianReduce10(sc: SparkContext, path_input: String): RDD[String] = {
+
+		val in = sc.textFile(path_input)
+
+		val receipts_to_products = in
+			.map { line =>
+				line.split(",") match {
+					case pair: Array[String] => (pair(0).toInt, pair(1).toInt)
+				}
+			}
+			.groupByKey()
+
+		receipts_to_products
+			.flatMap { receipt =>
+				Util.getPairs2( receipt._2 )
+			}
+			.reduceByKey { (a, b) => a + b }
+			.map {
+				case ((a: Int, b: Int), count: Int) => a + "," + b + "," + count
+			}
 
 	}
 

@@ -7,7 +7,9 @@ fi
 
 source ./scripts/0.1.variables.sh
 
-gcloud storage cp "gs://${DATAPROC_BUCKET_NAME}/${PATH_REMOTE_OUT}" "${PATH_LOCAL_OUT}"
+mkdir -p "${PATH_LOCAL_OUT}"
+
+gcloud storage cp "gs://${DATAPROC_BUCKET_NAME}/${PATH_REMOTE_OUT}/**" "${PATH_LOCAL_OUT}"
 
 # merge in an unique csv file
 find $PATH_LOCAL_OUT -type f -regex '.*part-[0-9]+[^\.crc]' -exec cat {} >> ${PATH_LOCAL_OUT_CSV} \;
