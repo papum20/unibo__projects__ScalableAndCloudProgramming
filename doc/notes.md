@@ -81,9 +81,17 @@ mapCartesianReduce_groupByKey_write (ms): MutableList(786762)
 3 workers :  
 1
 ```
+25/02/17 12:21:44
+mapCartesianReduce1 (ms): MutableList(772)
+25/02/17 12:36:17
+mapCartesianReduce1_write (ms): MutableList(873535)
 ```
 2
 ```
+25/02/17 12:04:42
+mapCartesianReduce2 (ms): MutableList(817)
+25/02/17 12:20:29
+mapCartesianReduce2_write (ms): MutableList(947174)
 ```
 3
 ```
@@ -97,6 +105,10 @@ mapCartesianReduce4_write (ms): MutableList(1410627)
 ```
 5
 ```
+5/02/17 11:41:43
+mapCartesianReduce5 (ms): MutableList(921)
+25/02/17 12:03:40
+mapCartesianReduce5_write (ms): MutableList(1317293)
 ```
 6
 ```
