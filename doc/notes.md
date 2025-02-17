@@ -46,6 +46,8 @@ write output :
 
 ## performance
 
+2 workers :  
+
 removed local[]; SparkSession  
 3  
 ```
@@ -76,6 +78,59 @@ mapCartesianReduce_groupByKey (ms): MutableList(901)
 2025-01-29 15:48:44
 mapCartesianReduce_groupByKey_write (ms): MutableList(786762)
 ```
+3 workers :  
+1
+```
+```
+2
+```
+```
+3
+```
+```
+4
+```
+25/02/17 10:14:44
+mapCartesianReduce4 (ms): MutableList(763)
+25/02/17 10:38:15
+mapCartesianReduce4_write (ms): MutableList(1410627)
+```
+5
+```
+```
+6
+```
+25/02/14 16:14:10
+mapCartesianReduce_groupByKey (ms): MutableList(763)
+25/02/14 16:23:41
+mapCartesianReduce_groupByKey_write (ms): MutableList(571140)
+```
 7
 ```
+2025-01-31 15:46:58 
+mapCartesianReduce_reduceByKey (ms): MutableList(1127)
+2025-01-31 15:56:12
+mapCartesianReduce_reduceByKey_write (ms): MutableList(553044)
 ```
+8
+```
+25/01/31 16:26:44
+mapCartesianReduce_reduceByKey_noString (ms): MutableList(754)
+25/01/31 16:37:20
+mapCartesianReduce_reduceByKey_noString_write (ms): MutableList(636282)
+```
+9
+```
+25/02/14 14:47:06
+mapCartesianReduce_groupByKey_reduceByKey (ms): MutableList(2512)
+25/02/14 14:58:19
+mapCartesianReduce_groupByKey_reduceByKey_write (ms): MutableList(673260)
+```
+10
+```
+25/02/14 15:04:54
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(765)
+25/02/14 15:17:02
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(728371)
+```
+
