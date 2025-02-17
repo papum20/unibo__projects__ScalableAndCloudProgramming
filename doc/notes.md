@@ -95,6 +95,10 @@ mapCartesianReduce2_write (ms): MutableList(947174)
 ```
 3
 ```
+25/02/17 13:54:13
+mapCartesianReduce3 (ms): MutableList(1026)
+25/02/17 14:17:50
+mapCartesianReduce3_write (ms): MutableList(1416774)
 ```
 4
 ```
