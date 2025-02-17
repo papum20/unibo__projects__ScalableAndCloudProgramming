@@ -29,39 +29,55 @@ object Main {
 
 		/* Args */
 
-		if (args.length < 1) {
+		if (args.length < 2) {
 			usage()
 			return
 		}
-		val is_local = args(0) == "true"
+		val version = args(0).toInt
+		val is_local = args(1) == "true"
 
-		if (!is_local && args.length < 3) {
+		if (!is_local && args.length < 4) {
 			usage()
 			return
 		}
-		val bucket_name = if (is_local) null else args(1)
-		val remote_out_path = if (is_local) null else args(2)
+		val bucket_name = if (is_local) null else args(2)
+		val remote_out_path = if (is_local) null else args(3)
 
 
 		val DATASET_PATH =
 			if (is_local) DATASET_PATH_LOCAL
-			else s"gs://${bucket_name}/${DATASET_PATH_REMOTE}"
+			else s"gs://$bucket_name/$DATASET_PATH_REMOTE"
 			//else DATASET_PATH_REMOTE
 			//else fs.getPath(DATASET_PATH_REMOTE).toAbsolutePath.toString
 		val OUTPUT_DIR =
 			if (is_local) OUTPUT_DIR_LOCAL
-			else s"gs://${bucket_name}/${remote_out_path}"
+			else s"gs://$bucket_name/$remote_out_path"
 			//else fs.getPath(OUTPUT_DIR_REMOTE).toAbsolutePath.toString
 
 		println("Path dataset: " + DATASET_PATH)
 		println("Path output dir: " + OUTPUT_DIR)
+		Util.printMem()
 
 
 		/* Run */
 
 		if (is_local)
 			FileUtils.forceMkdir(new File(OUTPUT_DIR))
-Util.printMem()
+
+		if (!is_local)
+			version match {
+				case 1 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce1", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce)
+				case 2 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce2", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce2)
+				case 3 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce3", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
+				case 4 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce4", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce4)
+				case 5 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce5", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce5)
+				case 6 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce6)
+				case 7 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_reduceByKey", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce7)
+				case 8 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce_noStrings)("mapCartesianReduce_reduceByKey_noString", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce8)
+				case 9 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey_reduceByKey", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce9)
+				case 10 => Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey_reduceByKey_match", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce10)
+			}
+
 		//Util.executeWithTime(Util.writeOutput)("mapCartesianReduce", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce)
 		//Util.executeWithTime(Util.writeOutput)("mapCartesianReduce2", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce2)
 		//Util.executeWithTime(Util.writeOutput)("mapCartesianReduce4", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce4)
@@ -72,8 +88,8 @@ Util.printMem()
 		//Util.executeWithTime(Util.writeOutput_noCoalesce_map)("mapCartesianAggregate", DATASET_PATH, OUTPUT_DIR, MapCartesianAggregate.mapCartesianAggregate)
 
 		//Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce3", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
-		Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey", DATASET_PATH, OUTPUT_DIR + "group", MapCartesianReduce.mapCartesianReduce6)
-		Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_reduceByKey", DATASET_PATH, OUTPUT_DIR + "reduce", MapCartesianReduce.mapCartesianReduce7)
+		//Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey", DATASET_PATH, OUTPUT_DIR + "group", MapCartesianReduce.mapCartesianReduce6)
+		//Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_reduceByKey", DATASET_PATH, OUTPUT_DIR + "reduce", MapCartesianReduce.mapCartesianReduce7)
 		//Util.executeWithTimeRDD(Util.writeOutput_noCoalesce_noStrings)("mapCartesianReduce_reduceByKey_noString", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce8)
 		//Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey_reduceByKey", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce9)
 		//Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey_reduceByKey_match", DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce10)
@@ -102,7 +118,7 @@ Util.printMem()
 
 
 	def usage(): Unit = {
-		println("Usage: IS_LOCAL={true|false} [BUCKET_NAME] [REMOTE_OUT_PATH]")
+		println("Usage: VERSION IS_LOCAL={true|false} [BUCKET_NAME] [REMOTE_OUT_PATH]")
 	}
 
 }

@@ -196,24 +196,7 @@ println("done")
 
 	def writeOutput_noCoalesce_noStrings(sc: SparkContext, rdd: RDD[((Int, Int), Int)], out_path: String): Unit = {
 
-		val tmp_path = out_path + "_tmp"
-
-		Files.deleteIfExists(Paths.get(out_path))
-		Files.deleteIfExists(Paths.get(tmp_path))
-		rdd.saveAsTextFile(tmp_path)
-
-		val tmp_files = Files.list(Paths.get(tmp_path))
-			.filter(path => path.getFileName.toString.startsWith("part-"))
-			.iterator()
-
-		val out = Files.newOutputStream(Paths.get(out_path))
-		while (tmp_files.hasNext) {
-			val tmp_file = tmp_files.next()
-			Files.copy(tmp_file, out)
-		}
-		out.close()
-
-		Files.deleteIfExists(Paths.get(tmp_path))
+		rdd.saveAsTextFile(out_path)
 	}
 
 	def writeOutput_noCoalesce_concurrentMap(sc: SparkContext, v: Map[(Int, Int), Int], out_path: String): Unit = {
