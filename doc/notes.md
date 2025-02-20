@@ -34,7 +34,7 @@ e.g.: PageRank sol :
 *	This method should only be used if the resulting map is expected to be small, as the whole thing is loaded into the driver's memory.
 *	To handle very large results, consider using `rdd.map(x => (x, 1L)).reduceByKey(_ + _)`, which returns an RDD[T, Long] instead of a map.
 
-`aggregate()` too not scalable, as doesn't return an RDD  
+`aggregate()` (or `reduce`) (to convert to map or concurrent map) too not scalable, as doesn't return an RDD  
 
 use HDFS functions, instead of std java IO, just for consistency and for resilience and distribution with future improvements  
 (even though it's not needed, at the moment, for such simple tasks)
@@ -149,4 +149,64 @@ mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(765)
 25/02/14 15:17:02
 mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(728371)
 ```
+retry, to choose final, 7 9 10  
+7
+```
+25/02/19 11:55:48
+mapCartesianReduce_reduceByKey (ms): MutableList(1823)
+25/02/19 12:11:24
+mapCartesianReduce_reduceByKey_write (ms): MutableList(935760)
+```
+9
+```
+25/02/19 12:15:19
+mapCartesianReduce_groupByKey_reduceByKey (ms): MutableList(802)
+25/02/19 12:27:55
+mapCartesianReduce_groupByKey_reduceByKey_write (ms): MutableList(756017)
+```
+10
+```
+25/02/19 12:43:06
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(791)
+25/02/19 12:52:18
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(551890)
+```
+10
+```
+25/02/20 09:11:43
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(771)
+25/02/20 09:20:39 
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(536158)
+```
+7
+```
+```
+9
+```
+```
+4
+```
+```
+5
+```
+```
 
+1 workers:  
+spark, local*  
+10
+```
+25/02/20 11:07:29
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(1930)
+25/02/20 11:26:57
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(1168303)
+```
+sc, local*  
+10
+```
+25/02/20 12:07:48
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(1317)
+25/02/20 12:32:53
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(1505099)
+```
+
+then do all tests w diff cpus   

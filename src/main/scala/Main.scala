@@ -1,13 +1,8 @@
-import com.google.cloud.storage.StorageOptions
-import com.google.cloud.storage.contrib.nio.CloudStorageFileSystem
 import functions.MapCartesianReduce
 import org.apache.commons.io.FileUtils
-import util.{GStorage, Time, Util}
+import util.{Time, Util}
 
 import java.io.File
-import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Paths}
-import java.util.stream.Collectors
 
 object Main {
 
