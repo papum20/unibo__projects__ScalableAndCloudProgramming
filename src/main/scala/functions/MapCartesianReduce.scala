@@ -1,14 +1,9 @@
 package functions
 
-import org.apache.commons.io.FileUtils
+import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.{SparkConf, SparkContext}
 import util.Util
 import util.Util.DEBUG
-
-import java.io.File
-import scala.collection.mutable
 
 object MapCartesianReduce {
 
@@ -107,7 +102,7 @@ object MapCartesianReduce {
 	}
 
 	/**
-	 * first map uses int keys and not strings.
+	 * first map uses int values and not strings.
 	 * also, group more maps
 	 * @param spark
 	 * @param path_input
@@ -139,7 +134,7 @@ object MapCartesianReduce {
 
 	/**
 	 * 2 + 3 +
-	 * is it better if elements are just split[0] instead of whole lines?
+	 * values' elements are just split[1] instead of whole lines
 	 * @param spark
 	 * @param path_input
 	 * @return
@@ -170,8 +165,7 @@ object MapCartesianReduce {
 	}
 
 	/**
-	 * 3 +
-	 * note in groupBy : do an aggregation later (and try to write it then to file)
+	 * 3 + getPairs2 (also returns sizes, and group by key)
 	 * @param spark
 	 * @param path_input
 	 * @return
@@ -195,15 +189,13 @@ object MapCartesianReduce {
 			}
 
 		pairs
-			//.aggregateByKey()
 			.groupBy { pair => pair }
 			.map { m => m._1._1 + "," + m._1._2 + "," + m._2.size }
 
 	}
 
 	/**
-	 * 3 +
-	 * getPairs also returns sizes, and group by key.
+	 * 5 (simplified)
 	 * @param spark
 	 * @param path_input
 	 * @return
