@@ -195,7 +195,7 @@ object MapCartesianReduce {
 	}
 
 	/**
-	 * 5 (simplified)
+	 * 5 + simplified + groupByKey
 	 * @param spark
 	 * @param path_input
 	 * @return
