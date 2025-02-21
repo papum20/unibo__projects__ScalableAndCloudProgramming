@@ -1,7 +1,6 @@
 package util
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 
 import java.io.{DataOutputStream, File, FileOutputStream}
@@ -14,20 +13,18 @@ object Util {
 
 
 	def executeWithTime[T](write: (SparkContext, T, String) => Unit) (
-		tag: String,
+		tag: String, local_mode: Boolean,
 		path_input: String, dir_output: String,
 		block: (SparkContext, String) => T
 	): Unit = {
 
 		println("Launching: " + tag)
 
-		val conf = new SparkConf().setAppName("orderProducts")
+		val conf =
+			if (local_mode) new SparkConf().setAppName("orderProducts").setMaster("local[*]")
+			else new SparkConf().setAppName("orderProducts")
 		val sc = new SparkContext(conf)
 		
-		val spark = SparkSession.builder()
-			.appName("orderProducts")
-			.getOrCreate()
-
 		val rdd = Time.printTime(tag, {
 			block(sc, path_input)
 		})
@@ -35,26 +32,23 @@ object Util {
 		Time.printTime( s"${tag}_write", {
 			write(sc, rdd, dir_output)
 		})
-		spark.stop()
+		sc.stop()
 
 	}
 
 	def executeWithTimeRDD[T](write: (SparkContext, RDD[T], String) => Unit) (
-		tag: String,
+		tag: String, local_mode: Boolean,
 		path_input: String, dir_output: String,
 		block: (SparkContext, String) => RDD[T]
 	): Unit = {
 
 		println("Launching: " + tag)
 
-		val conf = new SparkConf().setAppName("orderProducts").setMaster("local[*]")
+		val conf =
+			if (local_mode) new SparkConf().setAppName("orderProducts").setMaster("local[*]")
+			else new SparkConf().setAppName("orderProducts")
 		val sc = new SparkContext(conf)
 		
-		//val spark = SparkSession.builder()
-		//	.appName("orderProducts")
-		//	.master("local[*]")
-		//	.getOrCreate()
-
 		val rdd = Time.printTime(tag, {
 			block(sc, path_input)
 		})
@@ -62,16 +56,16 @@ object Util {
 		Time.printTime( s"${tag}_write", {
 			write(sc, rdd, dir_output)
 		})
-		//spark.stop()
+		sc.stop()
 
 	}
 
 	def executeWithTimeRDD(
-	   tag: String,
+	   tag: String, local_mode: Boolean,
 	   path_input: String, dir_output: String,
 	   block: (SparkContext, String) => RDD[String]
    	): Unit =
-		executeWithTimeRDD(writeOutput_noCoalesce)(tag, path_input, dir_output, block)
+		executeWithTimeRDD(writeOutput_noCoalesce)(tag, local_mode, path_input, dir_output, block)
 
 	def getPairs(elems: Iterable[Int]): Iterable[(Int, Int)] =
 		for {
