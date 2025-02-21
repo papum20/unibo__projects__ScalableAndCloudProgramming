@@ -39,3 +39,7 @@ sparkSession
 9: 673260, 756017
 10: 728371, 551890, 536158, avg 605473
 
+
+10:
+complexity T(n)=
+work complexity W

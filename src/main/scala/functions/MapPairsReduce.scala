@@ -5,9 +5,9 @@ import org.apache.spark.rdd.RDD
 import util.Util
 import util.Util.DEBUG
 
-object MapCartesianReduce {
+object MapPairsReduce {
 
-	def mapCartesianReduce(sc: SparkContext, path_input: String): RDD[String] = {
+	def mapPairsReduce(sc: SparkContext, path_input: String): RDD[String] = {
 
 		val in = sc.textFile(path_input)
 
@@ -75,7 +75,7 @@ object MapCartesianReduce {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianReduce2(sc: SparkContext, path_input: String): RDD[String] = {
+	def mapPairsReduce2(sc: SparkContext, path_input: String): RDD[String] = {
 
 		val in = sc.textFile(path_input)
 
@@ -102,13 +102,12 @@ object MapCartesianReduce {
 	}
 
 	/**
-	 * first map uses int values and not strings.
-	 * also, group more maps
+	 * 2 +group more maps
 	 * @param spark
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianReduce3(sc: SparkContext, path_input: String): RDD[String] = {
+	def mapPairsReduce3(sc: SparkContext, path_input: String): RDD[String] = {
 
 		val in = sc.textFile(path_input)
 
@@ -139,7 +138,7 @@ object MapCartesianReduce {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianReduce4(sc: SparkContext, path_input: String): RDD[String] = {
+	def mapPairsReduce4(sc: SparkContext, path_input: String): RDD[String] = {
 
 		val in = sc.textFile(path_input)
 
@@ -170,7 +169,7 @@ object MapCartesianReduce {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianReduce5(sc: SparkContext, path_input: String): RDD[String] = {
+	def mapPairsReduce5(sc: SparkContext, path_input: String): RDD[String] = {
 
 		val in = sc.textFile(path_input)
 
@@ -200,7 +199,7 @@ object MapCartesianReduce {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianReduce6(sc: SparkContext, path_input: String): RDD[String] = {
+	def mapPairsReduce6(sc: SparkContext, path_input: String): RDD[String] = {
 
 		val in = sc.textFile(path_input)
 
@@ -229,7 +228,7 @@ object MapCartesianReduce {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianReduce7(sc: SparkContext, path_input: String): RDD[String] = {
+	def mapPairsReduce7(sc: SparkContext, path_input: String): RDD[String] = {
 
 		val in = sc.textFile(path_input)
 
@@ -258,7 +257,7 @@ object MapCartesianReduce {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianReduce8(sc: SparkContext, path_input: String): RDD[((Int, Int), Int)] = {
+	def mapPairsReduce8(sc: SparkContext, path_input: String): RDD[((Int, Int), Int)] = {
 
 		val in = sc.textFile(path_input)
 
@@ -286,7 +285,7 @@ object MapCartesianReduce {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianReduce9(sc: SparkContext, path_input: String): RDD[String] = {
+	def mapPairsReduce9(sc: SparkContext, path_input: String): RDD[String] = {
 
 		val in = sc.textFile(path_input)
 
@@ -312,7 +311,7 @@ object MapCartesianReduce {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianReduce10(sc: SparkContext, path_input: String): RDD[String] = {
+	def mapPairsReduce10(sc: SparkContext, path_input: String): RDD[String] = {
 
 		val in = sc.textFile(path_input)
 

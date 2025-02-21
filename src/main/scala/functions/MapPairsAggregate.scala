@@ -7,7 +7,7 @@ import java.util.Map
 import java.util.concurrent.ConcurrentHashMap
 import scala.collection.immutable.HashMap
 
-object MapCartesianAggregate {
+object MapPairsAggregate {
 
 
 	/**
@@ -17,7 +17,7 @@ object MapCartesianAggregate {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianAggregateConcurrent(sc: SparkContext, path_input: String): Map[(Int, Int), Int] = {
+	def mapPairsAggregateConcurrent(sc: SparkContext, path_input: String): Map[(Int, Int), Int] = {
 
 		val in = sc.textFile(path_input)
 
@@ -58,7 +58,7 @@ object MapCartesianAggregate {
 	 * @param path_input
 	 * @return
 	 */
-	def mapCartesianAggregate(sc: SparkContext, path_input: String): HashMap[(Int, Int), Int] = {
+	def mapPairsAggregate(sc: SparkContext, path_input: String): HashMap[(Int, Int), Int] = {
 
 		val in = sc.textFile(path_input)
 
