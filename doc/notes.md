@@ -25,7 +25,7 @@ e.g.: PageRank sol :
 
 ## implementation
 
-(local, 1 worker, 16 cores) map to split before groupBy is much faster (<0.5s) than just groupBy with split inside (2s)  
+(local, 1 worker, 16 cores) map to split before groupBy is much faster (<0.5s) than just groupBy with split inside (2s) (old tests, maybe not valid, with `splitBefore`, now removed)  
 *	`map{split(",")}.groupBy{pair[0]}`
 *	`groupBy{split(",")[0]}`
 
@@ -216,9 +216,31 @@ org.apache.spark.SparkException: Job 0 cancelled because SparkContext was shut d
 ```
 local allows local mode, so use local cpu threads as executors, but still single node, i.e. single JVM
 
-local 10
+10
+local *
 Launching: mapCartesianReduce_groupByKey_reduceByKey_match
 mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(861)
 mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(129965)
 mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(861)
 mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(129965)
+
+local 1
+Launching: mapCartesianReduce_groupByKey_reduceByKey_match
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(330)
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(367543)
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(330)
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(367543)
+
+local 8
+Launching: mapCartesianReduce_groupByKey_reduceByKey_match
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(295)
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(110201)
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(295)
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(110201)
+
+local 16
+Launching: mapCartesianReduce_groupByKey_reduceByKey_match
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(258)
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(122224)
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(258)
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(122224)
