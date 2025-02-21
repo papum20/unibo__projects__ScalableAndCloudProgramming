@@ -33,6 +33,9 @@ spark-submit \
     --conf "spark.executor.extraJavaOptions=-Dlog4j.configuration=file:$PATH_LOG4J_PROPERTIES" \
     --driver-memory $JVM_MEMORY \
 	"$PATH_SRC_JAR" \
-	-- true \
+	-- 10 true true "$PATH_LOCAL_OUT" \
 	2>&1 | tee -a "$PATH_LOG"
     #--master 'local[0]' \
+
+# merge in an unique csv file
+find $PATH_LOCAL_OUT -type f -regex '.*part-[0-9]+[^\.crc]' -exec cat {} >> ${PATH_LOCAL_OUT_CSV} \;
