@@ -1,8 +1,5 @@
-import functions.MapCartesianReduce
-import org.apache.commons.io.FileUtils
+import functions.MapPairsReduce
 import util.{Time, Util}
-
-import java.io.File
 
 object Main {
 
@@ -56,7 +53,7 @@ object Main {
 
 		println("Path dataset: "	+ DATASET_PATH )
 		println("Path output dir: "	+ OUTPUT_DIR )
-		Util.printMem()
+		//Util.printMem()
 
 
 		/* Run */
@@ -65,27 +62,22 @@ object Main {
 		//	FileUtils.forceMkdir(new File(OUTPUT_DIR))
 
 		version match {
-			case 1 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce1",									local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce)
-			case 2 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce2",									local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce2)
-			case 3 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce3",									local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce3)
-			case 4 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce4",									local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce4)
-			case 5 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce5",									local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce5)
-			case 6 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey",						local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce6)
-			case 7 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_reduceByKey",						local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce7)
-			case 8 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce_noStrings)("mapCartesianReduce_reduceByKey_noString", 	local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce8)
-			case 9 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey_reduceByKey",			local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce9)
-			case 10 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapCartesianReduce_groupByKey_reduceByKey_match",		local_mode, DATASET_PATH, OUTPUT_DIR, MapCartesianReduce.mapCartesianReduce10)
+			case 1 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapPairsReduce1",									local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce)
+			case 2 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapPairsReduce2",									local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce2)
+			case 3 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapPairsReduce3",									local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce3)
+			case 4 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapPairsReduce4",									local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce4)
+			case 5 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapPairsReduce5",									local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce5)
+			case 6 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapPairsReduce_groupByKey",						local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce6)
+			case 7 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapPairsReduce_reduceByKey",						local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce7)
+			case 8 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce_noStrings)("mapPairsReduce_reduceByKey_noString", 	local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce8)
+			case 9 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapPairsReduce_groupByKey_reduceByKey",			local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce9)
+			case 10 =>	Util.executeWithTimeRDD(Util.writeOutput_noCoalesce)("mapPairsReduce_groupByKey_reduceByKey_match",		local_mode, DATASET_PATH, OUTPUT_DIR, MapPairsReduce.mapPairsReduce10)
 		}
 
 		/* OTHER TESTS */
 
-		//Util.executeWithTime(Util.writeOutput_noCoalesce_concurrentMap)("mapCartesianAggregateConcurrent", DATASET_PATH, OUTPUT_DIR, MapCartesianAggregate.mapCartesianAggregateConcurrent)
-		//Util.executeWithTime(Util.writeOutput_noCoalesce_map)("mapCartesianAggregate", DATASET_PATH, OUTPUT_DIR, MapCartesianAggregate.mapCartesianAggregate)
-
-		// split
-		//Util.executeWithTime("splitInside", DATASET_PATH, OUTPUT_DIR, SplitTests.splitInside)
-		//Util.executeWithTime("splitBefore", DATASET_PATH, OUTPUT_DIR, SplitTests.splitBefore)
-
+		//Util.executeWithTime(Util.writeOutput_noCoalesce_concurrentMap)("mapPairsAggregateConcurrent", DATASET_PATH, OUTPUT_DIR, MapPairsAggregate.mapPairsAggregateConcurrent)
+		//Util.executeWithTime(Util.writeOutput_noCoalesce_map)("mapPairsAggregate", DATASET_PATH, OUTPUT_DIR, MapPairsAggregate.mapPairsAggregate)
 
 		Time.printAllTimes()
 

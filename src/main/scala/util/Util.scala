@@ -21,7 +21,7 @@ object Util {
 		println("Launching: " + tag)
 
 		val conf =
-			if (local_mode) new SparkConf().setAppName("orderProducts").setMaster("local[*]")
+			if (local_mode) new SparkConf().setAppName("orderProducts").setMaster("local[1]")
 			else new SparkConf().setAppName("orderProducts")
 		val sc = new SparkContext(conf)
 		
@@ -45,7 +45,7 @@ object Util {
 		println("Launching: " + tag)
 
 		val conf =
-			if (local_mode) new SparkConf().setAppName("orderProducts").setMaster("local[*]")
+			if (local_mode) new SparkConf().setAppName("orderProducts").setMaster("local[8]")
 			else new SparkConf().setAppName("orderProducts")
 		val sc = new SparkContext(conf)
 		
@@ -82,10 +82,9 @@ object Util {
 	 * @return (pair, 1)
 	 */
 	def getPairs2(elems: Iterable[Int]): Iterable[((Int, Int), Int)] = {
-		val set = elems.toSet
 		for {
-			a <- set
-			b <- set
+			a <- elems
+			b <- elems
 			// 1. avoid comparison when they're equal
 			// 2. don't repeat pairs
 			// 3. compute fewer pairs
