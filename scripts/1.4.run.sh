@@ -20,7 +20,7 @@ if [[ $DATAPROC_CLUSTER_NUM_WORKERS == 1 ]] ; then
 		--region="${DATAPROC_CLUSTER_REGION}" \
 		 --properties=spark.executor.memory=8g \
 		--jar="gs://${DATAPROC_BUCKET_NAME}/${PATH_DST_JAR}" \
-		-- 10 false "${DATAPROC_BUCKET_NAME}" "${PATH_REMOTE_OUT}"
+		-- 10 false true "${PATH_REMOTE_OUT}" "${DATAPROC_BUCKET_NAME}"
 		#--driver-log-levels org.apache.spark=INFO,com.google.cloud.hadoop.gcsio=INFO \
 		#--properties=spark.executor.memory=4g,spark.executor.cores=2,spark.driver.memory=4g,spark.sql.shuffle.partitions=50 \
 		#-- "gs://${DATAPROC_BUCKET_NAME}/${PATH_DST_DATASET}" "gs://${DATAPROC_BUCKET_NAME}/${PATH_REMOTE_OUT}"
@@ -29,5 +29,5 @@ else
 		--bucket="${DATAPROC_BUCKET_NAME}" \
 		--region="${DATAPROC_CLUSTER_REGION}" \
 		--jar="gs://${DATAPROC_BUCKET_NAME}/${PATH_DST_JAR}" \
-		-- 10 false "${DATAPROC_BUCKET_NAME}" "${PATH_REMOTE_OUT}"
+		-- 10 false false "${PATH_REMOTE_OUT}" "${DATAPROC_BUCKET_NAME}"
 fi

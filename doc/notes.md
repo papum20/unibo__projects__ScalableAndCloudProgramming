@@ -215,3 +215,10 @@ ERROR SparkHadoopWriter: Aborting job job_202502201021173750682272632526358_0007
 org.apache.spark.SparkException: Job 0 cancelled because SparkContext was shut down
 ```
 local allows local mode, so use local cpu threads as executors, but still single node, i.e. single JVM
+
+local 10
+Launching: mapCartesianReduce_groupByKey_reduceByKey_match
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(861)
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(129965)
+mapCartesianReduce_groupByKey_reduceByKey_match (ms): MutableList(861)
+mapCartesianReduce_groupByKey_reduceByKey_match_write (ms): MutableList(129965)
