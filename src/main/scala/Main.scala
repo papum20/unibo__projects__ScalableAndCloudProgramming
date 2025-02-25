@@ -86,6 +86,11 @@ object Main {
 
 	private def usage(): Unit = {
 		println("Usage: VERSION IS_LOCAL={true|false} LOCAL_MODE={true|false} {REMOTE_OUT_PATH|LOCAL_OUT_PATH} [BUCKET_NAME]")
+		println("    VERSION: algorithm version, 1 to 10")
+		println("    IS_LOCAL: whether running in local")
+		println("    LOCAL_MODE: whether running Spark in local mode (probably needed in local, or with a single worker)")
+		println("    REMOTE_OUT_PATH|LOCAL_OUT_PATH: remote or local output path")
+		println("    BUCKET_NAME: if not in local, needed to specify the Google Cloud bucket name")
 	}
 
 }
