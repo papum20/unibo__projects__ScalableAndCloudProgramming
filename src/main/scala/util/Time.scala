@@ -2,6 +2,10 @@ package util
 
 import scala.collection.mutable
 
+
+/**
+ * Register, save, retrieve execution times.
+ */
 object Time {
 
 	private val times = new mutable.LinkedHashMap[String, mutable.MutableList[Long]]()

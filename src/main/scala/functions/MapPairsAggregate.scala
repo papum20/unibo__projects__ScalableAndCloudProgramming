@@ -7,6 +7,10 @@ import java.util.Map
 import java.util.concurrent.ConcurrentHashMap
 import scala.collection.immutable.HashMap
 
+
+/**
+ * These functions return non-Spark collections, so they are suited to be scaled.
+ */
 object MapPairsAggregate {
 
 
