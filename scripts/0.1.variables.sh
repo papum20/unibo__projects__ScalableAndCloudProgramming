@@ -43,7 +43,7 @@ export DATAPROC_CLUSTER_WORKER_MACHINE_TYPE=n2-highmem-2
 # paths
 export PATH_SRC_JAR=${PWD}/target/scala-2.12/scalable_2.12-0.1.0.jar
 export PATH_SRC_DATASET=${PWD}/src/main/resources/order_products.csv
-#export PATH_SRC_DATASET=${PWD}/src/main/resources/order_products_head100.csv
+#export PATH_SRC_DATASET=${PWD}/src/main/resources/order_products_50.csv
 export PATH_DST_JAR=scalable.jar
 export PATH_DST_DATASET=order_products.csv
 

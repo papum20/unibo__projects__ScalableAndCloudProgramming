@@ -12,6 +12,16 @@ object Util {
 	val DEBUG = false
 
 
+	/**
+	 * Execute, save and print execution time.
+	 * @param write
+	 * @param tag
+	 * @param local_mode
+	 * @param path_input
+	 * @param dir_output
+	 * @param block
+	 * @tparam T
+	 */
 	def executeWithTime[T](write: (SparkContext, T, String) => Unit) (
 		tag: String, local_mode: Boolean,
 		path_input: String, dir_output: String,
@@ -36,6 +46,16 @@ object Util {
 
 	}
 
+	/**
+	 * Execute, save and print execution time.
+	 * @param write
+	 * @param tag
+	 * @param local_mode
+	 * @param path_input
+	 * @param dir_output
+	 * @param block
+	 * @tparam T
+	 */
 	def executeWithTimeRDD[T](write: (SparkContext, RDD[T], String) => Unit) (
 		tag: String, local_mode: Boolean,
 		path_input: String, dir_output: String,
@@ -60,6 +80,14 @@ object Util {
 
 	}
 
+	/**
+	 * Execute, save and print execution time.
+	 * @param tag
+	 * @param local_mode
+	 * @param path_input
+	 * @param dir_output
+	 * @param block
+	 */
 	def executeWithTimeRDD(
 	   tag: String, local_mode: Boolean,
 	   path_input: String, dir_output: String,
@@ -67,6 +95,12 @@ object Util {
    	): Unit =
 		executeWithTimeRDD(writeOutput_noCoalesce)(tag, local_mode, path_input, dir_output, block)
 
+
+	/**
+	 * Get all possible pairs of distinct elements.
+ 	 * @param elems
+	 * @return
+	 */
 	def getPairs(elems: Iterable[Int]): Iterable[(Int, Int)] =
 		for {
 			a <- elems
@@ -78,7 +112,8 @@ object Util {
 		} yield (a,b)
 
 	/**
-	 *
+	 * Get all possible pairs of distinct elements.
+	 * @param elems
 	 * @return (pair, 1)
 	 */
 	def getPairs2(elems: Iterable[Int]): Iterable[((Int, Int), Int)] = {
@@ -93,6 +128,9 @@ object Util {
 	}
 
 
+	/**
+	 * Print info on JVM memory.
+	 */
 	def printMem(): Unit = {
 
 		val runtime = Runtime.getRuntime

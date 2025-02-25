@@ -5,6 +5,11 @@ import org.apache.spark.rdd.RDD
 import util.Util
 import util.Util.DEBUG
 
+
+/**
+ * These functions work on a Spark RDD.
+ * Version 10 is the final one.
+ */
 object MapPairsReduce {
 
 	def mapPairsReduce(sc: SparkContext, path_input: String): RDD[String] = {
