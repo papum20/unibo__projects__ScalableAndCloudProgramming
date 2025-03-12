@@ -1,6 +1,9 @@
 
-# exclude all those heavy results (for now)
+# exclude all those heavy results
 out/*.csv
+
+# exclude the main dataset
+src/main/resources/order_products.csv
 
 
 #
