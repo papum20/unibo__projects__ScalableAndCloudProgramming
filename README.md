@@ -7,7 +7,6 @@ A co-purchase analysis implemented with Spark+Scala and run on Google Cloud.
 ## Files
 
 *	`doc/` : documents, notes, report, project requirements etc.
-	*	`doc/outputs/` : example output(s) (on the dataset)
 *	`out/` : where local execution output will be saved by default
 *	`scripts/` : scripts for execution, setup etc., divided in groups
 	*	`0.*` : setup
@@ -18,6 +17,8 @@ A co-purchase analysis implemented with Spark+Scala and run on Google Cloud.
 *	`src/` :
 	*	`main/scala/` : source code
 	*	`main/resources/` : dataset(s)
+		*	`order_products.csv` : (missing file) the dataset path used in testing
+		*	`*` : reduced datasets
 
 
 ## Setup
